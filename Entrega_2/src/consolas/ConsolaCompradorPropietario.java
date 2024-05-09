@@ -47,7 +47,8 @@ public class ConsolaCompradorPropietario extends ConsolaBasica {
         System.out.println("3. Realizar compra");
         System.out.println("4. Registrar pieza que tiene");
         System.out.println("5. Pedir verificación al Administrador");
-        System.out.println("6. Salir");
+        System.out.println("6. Mostrar Historial de una pieza");
+        System.out.println("7. Salir");
         int opcion = pedirEnteroAlUsuario("Seleccione una opción");
         switch (opcion) {
             case 1:
@@ -63,10 +64,11 @@ public class ConsolaCompradorPropietario extends ConsolaBasica {
             	registrarPieza(users, compradordelPrograma, archivo);
                 break;
             case 5:
-                
                 break;
-            
             case 6:
+            	mostrarHistorialPieza();
+            	break;
+            case 7:
             	System.out.println("Saliendo al menú principal...");
                 continuar = false; 
                 break;
@@ -278,3 +280,23 @@ public class ConsolaCompradorPropietario extends ConsolaBasica {
 
 
 }}
+}
+    public void mostrarHistorialPieza(){
+    	Map<String, Pieza> piezas = this.inventario.getInventarioExhibido();
+    	for (Pieza pieza : piezas.values()) {
+    		System.out.println(pieza.getIdPieza()+"."+pieza.getTitulo());
+    	}
+    	String pieza_de_interes = pedirCadenaAlUsuario("Ingrese el ID de la obra que le interesa:");
+    	Pieza pieza = piezas.get(pieza_de_interes);
+    	
+    	if (pieza != null) {
+    		pieza.getHistorialPropietarios().forEach(x -> {
+    			System.out.println(x.getNombre());
+    		});
+    	
+    		pieza.getHistorialVentas().forEach(x -> {
+    			System.out.println("Fue comprada por " + x.getComprador() + " Por " + x.getDinero());
+    		});
+    	}
+    }
+    }

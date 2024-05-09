@@ -98,6 +98,7 @@ public class ConsolaPrincipal extends ConsolaBasica {
         String username = reader.readLine();
         System.out.print("Ingrese su contraseña: ");
         String password = reader.readLine();
+        CompradorPropietario user = null;
 
         boolean autenticado = false;
 
@@ -114,14 +115,18 @@ public class ConsolaPrincipal extends ConsolaBasica {
             for (CompradorPropietario comprador : usuariosDelPrograma.getCompradoresEnPrograma()) {
                 if (comprador.getUsername().equals(username) && comprador.getPasswordHash().equals(password)) {
                     autenticado = true;
+                    user = comprador;
                     break;
                 }
             }
         }
 
-        if (autenticado) {
+        if (autenticado && tipoUsuario == "CompradorPropietario") {
             System.out.println("Autenticación exitosa. Bienvenido " + tipoUsuario + ".");
-            lanzarConsolaUsuario(tipoUsuario);  
+            lanzarConsolaCompradorPropietario(user);  
+        } else if (autenticado && tipoUsuario != "CompradorPropietario") {
+        	System.out.println("Autenticación exitosa. Bienvenido " + tipoUsuario + ".");
+            lanzarConsolaUsuario(tipoUsuario);
         } else {
             System.out.println("Credenciales incorrectas o rol incorrecto.");
         }
@@ -133,7 +138,7 @@ public class ConsolaPrincipal extends ConsolaBasica {
         switch (tipoUsuario) {
         
             case "Administrador":
-                ConsolaAdministrador consolaAdministrador = new ConsolaAdministrador(inventario);
+                ConsolaAdministrador consolaAdministrador = new ConsolaAdministrador(inventario, this.usuariosDelPrograma);
                 consolaAdministrador.mostrarMenuPrincipal();
                 break;
             case "Operador":
@@ -154,6 +159,11 @@ public class ConsolaPrincipal extends ConsolaBasica {
                 break;
         }
     }
+    
+    private void lanzarConsolaCompradorPropietario(CompradorPropietario usuario) throws IOException {
+    	ConsolaCompradorPropietario consola = new ConsolaCompradorPropietario(inventario, usuario);
+    	consola.mostrarMenuPrincipal();
+    }
 
     private void registrarNuevoUsuario(BufferedReader reader) throws IOException {
     	String[] opciones = new String[]{ "Administrador", "Operador", "Cajero", "Comprador o Propietario" };
@@ -167,7 +177,7 @@ public class ConsolaPrincipal extends ConsolaBasica {
 			
 			File archivo = new File( "./datos/" + "Usuarios" );
             tipoUsuario = "Administrador";
-            ConsolaAdministrador cadmi = new ConsolaAdministrador(inventario);
+            ConsolaAdministrador cadmi = new ConsolaAdministrador(inventario, this.usuariosDelPrograma);
             cadmi.crearUsuario(usuariosDelPrograma);
             usuariosDelPrograma.guardarUsuarios(archivo);
             

@@ -124,7 +124,6 @@ public class Pieza {
     public void actualizarEstadoExhibicion(boolean estaExhibida) {
         this.estaExhibida = estaExhibida;
     }
-    
     public List<CompradorPropietario> getHistorialPropietarios() {
     	return this.historialPropietarios;
     }
@@ -137,6 +136,5 @@ public class Pieza {
     public void setVenta(Oferta oferta) {
     	CompradorPropietario nuevoPropietario = oferta.getComprador();
     	this.historialVentas.add(oferta);
-    	this.setPropietario(nuevoPropietario);
     }
 }

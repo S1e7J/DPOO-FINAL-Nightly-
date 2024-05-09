@@ -6,6 +6,7 @@ import galeria.inventarios.InventarioGeneral;
 import subasta.Oferta;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.io.IOException;
 import java.util.Date;
@@ -16,7 +17,7 @@ public class ConsolaAdministrador extends ConsolaBasica {
     private InventarioGeneral inventario;
     private UsuariosRegistrados usuariosRegistrados;
 
-    public ConsolaAdministrador(InventarioGeneral inventario) {
+    public ConsolaAdministrador(InventarioGeneral inventario, UsuariosRegistrados usuariosRegistrados) {
         this.inventario = inventario;
         this.usuariosRegistrados = usuariosRegistrados;
     }
@@ -36,7 +37,8 @@ public class ConsolaAdministrador extends ConsolaBasica {
             System.out.println("4. Registrar Oferta");
             System.out.println("5. Ver Historia de Compras");
             System.out.println("6. Calcular Valor de Colección");
-            System.out.println("7. Salir");
+            System.out.println("7. Mostrar el historial de una pieza");
+            System.out.println("8. Salir");
 
             int opcion = pedirEnteroAlUsuario("Seleccione una opción:");
             switch (opcion) {
@@ -59,6 +61,8 @@ public class ConsolaAdministrador extends ConsolaBasica {
                     calcularValorColeccion();
                     break;
                 case 7:
+                	mostrarHistorialPieza();
+                case 8:
                     System.out.println("Saliendo al menú principal...");
                     continuar = false; 
                     break;
@@ -81,7 +85,6 @@ public class ConsolaAdministrador extends ConsolaBasica {
 		        			
 		        		}
         	}
-        	
         }
         System.out.println("Pieza con ID " + idPieza + " agregada exitosamente al inventario.");
     }
@@ -168,5 +171,24 @@ public class ConsolaAdministrador extends ConsolaBasica {
         }
         System.out.println("Comprador no encontrado.");
         return null;
+    }
+    
+    public void mostrarHistorialPieza(){
+    	Map<String, Pieza> piezas = this.inventario.getInventarioExhibido();
+    	for (Pieza pieza : piezas.values()) {
+    		System.out.println(pieza.getIdPieza()+"."+pieza.getTitulo());
+    	}
+    	String pieza_de_interes = pedirCadenaAlUsuario("Ingrese el ID de la obra que le interesa:");
+    	Pieza pieza = piezas.get(pieza_de_interes);
+    	
+    	if (pieza != null) {
+    		pieza.getHistorialPropietarios().forEach(x -> {
+    			System.out.println(x.getNombre());
+    		});
+    	
+    		pieza.getHistorialVentas().forEach(x -> {
+    			System.out.println("Fue comprada por " + x.getComprador() + " Por " + x.getDinero());
+    		});
+    	}
     }
 }
